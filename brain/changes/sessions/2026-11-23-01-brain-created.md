@@ -1,0 +1,21 @@
+# Session 01 — Brain created
+
+- **Date:** 2026-11-23
+- **Goal / request:** Wadi approved building the "Face Attendance System" from Instagram reel #287 (@codingwithsagar — face recognition + live-location attendance) and said it looks very good ("ye project krty han, boht acha lag rha"). Per the standing brain-first rule, create the complete project brain BEFORE any code. LEAN mode, docs only.
+- **What was done (files created):**
+  - Root: `AGENT.md`, `README.md`, `.env.example`
+  - Brain core: `00-START-HERE.md`, `PRD.md`, `ARCHITECTURE.md`, `DATA_MODEL.md`, `API_SPEC.md`, `DESIGN.md`, `BUILD_PLAN.md`, `TOOLS.md`, `WORKFLOW.md`, `DEPLOYMENT.md`, `ENV.md`
+  - Brain support: `DECISIONS.md` (ADR-001…006), `SECURITY.md` (14-point vibe-code sweep applied), `ETHICS_PRIVACY.md`, `RISKS.md`, `TESTING.md`, `PRODUCTION_READINESS.md`, `GLOSSARY.md`
+  - Extras: `TEAM.md` (solo), `SUBMISSION.md` (N/A stub), `JUDGE_QA.md` (8 interview Q&As), `DEMO_DATA.md` (5-student seed plan), `RETRO.md` (empty template)
+  - Prompts: `prompts/audit-changes.md` (verbatim), `new-feature.md`, `bugfix.md`, `refactor.md`, `review.md`, `deploy-fix.md`, `ui-polish.md`
+  - Logging: `changes/changelog.md`, `changes/current-state.md`, this session file
+- **Decisions + reasoning:**
+  - Stack = Next.js (TS) + Supabase + face-api.js in the browser + Geolocation + SheetJS on Vercel (ADR-001/002/003) — matches the reel's phone-web flow, zero backend hosting cost, free tiers only, Wadi's existing stack.
+  - FastAPI + DeepFace kept as a documented fallback if browser matching accuracy disappoints (ADR-005).
+  - Default radius 100 m, teacher-configurable; GPS accuracy cap 50 m; match threshold 0.6 to be tuned on the demo set (ADR-004/006).
+  - No DEMO_PITCH.md — no formal evaluation; portfolio/interview value mapped in PRD.md + JUDGE_QA.md instead.
+  - No CONTRIBUTING.md — solo project.
+- **Problems + fixes:** None. (Input reel entry #287 and the audit playbook's security sweep were read before writing; sweep items adapted to this project in SECURITY.md.)
+- **Status:** Done.
+- **Next step:** Phase 0 — create GitHub repo `face-attendance`, scaffold Next.js, create the Supabase project, deploy the EMPTY app to Vercel, open the URL on Wadi's phone. (BUILD_PLAN.md Phase 0.)
+- **Commit hash:** N/A — repo not created yet; these files live in `~/workspace/face-attendance/` until Phase 0.

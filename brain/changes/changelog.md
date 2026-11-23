@@ -1,0 +1,12 @@
+# Changelog — Face Attendance System
+
+_Verified changes only. Format: Change → Reason → Affected Area → Impact → Evidence → Status._
+
+## 2026-11-23
+- **Change:** Project brain created (AGENT.md, README.md, .env.example + full /brain documentation set). → **Reason:** Brain-first rule — no code before the brain exists; project approved by Wadi from reel #287 (@codingwithsagar). → **Affected Area:** Documentation only; no app code. → **Impact:** Any agent/human can start Phase 0 with full context. → **Evidence:** Session file `changes/sessions/2026-11-23-01-brain-created.md`; files on disk under `~/workspace/face-attendance/`. → **Status:** Verified.
+
+Project initialized. No code yet.
+
+- **Change:** Phase 0 scaffold — Next.js 16.4.6 (TypeScript, App Router) + Tailwind CSS 4.3.3 merged into the project root; DESIGN.md tokens in `app/globals.css`; placeholder home page; MIT `LICENSE` added. → **Reason:** BUILD_PLAN.md Phase 0; Wadi approved ("kro", 2026-11-23). → **Affected Area:** New app code at project root (`app/`, `components/`, `lib/`, `public/`, config files); brain untouched. → **Impact:** App builds locally; real features start from this base in Phase 1+. → **Evidence:** Local `npm run build` passes; session file `changes/sessions/2026-11-23-02-phase-0-setup.md`. → **Status:** Verified.
+- **Change:** Vercel project `face-attendance` created and the placeholder app deployed to production; SSO protection disabled; `NEXT_PUBLIC_CLASS_RADIUS_METERS=100` env var set. → **Reason:** Phase 0 exit requires a live URL. → **Affected Area:** Vercel (team abdu1wahid, project id `prj_yX7MwvngRMdunyAMP9cIh1NVFPlD`, deployment `dpl_FkjTH7zUesZghbGnvPdzVCsJR2Y6`). → **Impact:** https://face-attendance-abdu1wahid.vercel.app/ serves the placeholder publicly. → **Evidence:** curl returned HTTP 200 with the placeholder content (project name, "Phase 0", concept line). → **Status:** Verified.
+- **Change:** GitHub repo creation and Supabase project creation attempted and BLOCKED (GitHub App 403 on `create_repository`; Supabase Management API 403 on `POST /v1/projects`). → **Reason:** Recorded so the blocker is not mistaken for done work. → **Affected Area:** Phase 0 items 1 and 3 remain open; first push and `.env.local` pending. → **Impact:** Exact unblocking asks for Wadi are in `current-state.md`. → **Evidence:** Session file `changes/sessions/2026-11-23-02-phase-0-setup.md` (full detail). → **Status:** Blocked (needs human action).
