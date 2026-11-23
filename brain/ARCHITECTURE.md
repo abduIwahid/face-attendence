@@ -15,9 +15,8 @@
 - Zero backend hosting cost; no ML server to keep awake on free tiers.
 - Fallback if accuracy disappoints: FastAPI + DeepFace service (see RISKS.md / DECISIONS.md ADR-005).
 
-## Folder structure (planned)
+## Folder structure (as built — src/ OFF, folders at project root; corrected 2026-11-23, session 05)
 ```
-src/
   app/
     page.tsx              ← landing: Register / Verify / Teacher entry points
     register/page.tsx     ← registration form + camera capture

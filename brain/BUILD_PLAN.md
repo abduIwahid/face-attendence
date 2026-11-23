@@ -11,12 +11,12 @@ Budget ≈ 7 days part-time. Percentages are of total effort. Owner = Wadi for e
 - **Exit check:** empty app live on a real URL, opened on a phone.
 
 ## Phase 1 — Data model + settings + seed skeleton (8–25%)
-- [ ] Migrations: `students`, `class_settings`, `attendance` + RLS on (DATA_MODEL.md)
-- [ ] Private Storage bucket `registration-photos`
-- [ ] `lib/`: supabase clients, `geo.ts` (haversine) + unit test, Zod schemas
-- [ ] `class_settings` row 1 seeded (demo location — DEMO_DATA.md)
-- [ ] Teacher auth wired (decision in DECISIONS.md) + empty teacher page behind it
-- **Exit check:** tables exist, RLS verified (anon key cannot read `students`).
+- [ ] Migrations: `students`, `class_settings`, `attendance` + RLS on (DATA_MODEL.md) — **SQL written + deployed (session 05): `supabase/migrations/20261123153000_phase_1_schema.sql` + one-paste copy `supabase/phase-1-schema.sql`. APPLIED ☐ — pending Wadi's paste into the dashboard SQL Editor (connector gets 403 on this project). This is the one Wadi action for Phase 1.**
+- [ ] Private Storage bucket `registration-photos` — included in the same Phase 1 SQL file; goes live with the paste above
+- [x] `lib/`: supabase clients, `geo.ts` (haversine) + unit test, Zod schemas — DONE 2026-11-23 (session 05): `lib/supabase/{client,server,admin}.ts`, `lib/geo.ts` + `lib/geo.test.ts` (5/5 passing), `lib/validation.ts`
+- [ ] `class_settings` row 1 seeded (demo location — DEMO_DATA.md) — seed statement included (commented) in the Phase 1 SQL; needs the on-site coordinates first
+- [x] Teacher auth wired (decision in DECISIONS.md) + empty teacher page behind it — DONE 2026-11-23 (session 05): Supabase Auth email/password; `/login` page; `/teacher` placeholder dashboard behind the server-side session guard (layout); logout. DECISIONS.md open question to be marked settled by Wadi.
+- **Exit check:** tables exist, RLS verified (anon key cannot read `students`) — pending the schema paste above.
 
 ## Phase 2 — Core feature (25–60%) — mock-first, then wire
 - [ ] Register page UI on stubbed capture → then real camera + face-api.js descriptor

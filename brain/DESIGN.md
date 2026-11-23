@@ -47,8 +47,11 @@ Accent usage: primary buttons, MATCHED/PRESENT states, focus rings, active nav. 
 }
 ```
 
-## Tailwind snippet (tailwind.config.ts — extend only, no default palette overrides elsewhere)
+## Tailwind mapping (as built — Tailwind v4, CSS-first; corrected 2026-11-23, session 05)
+The app runs Tailwind v4: there is no `tailwind.config.ts`. The tokens above are mapped in `app/globals.css` via CSS variables + `@theme inline` (colours, shadows, font stack) — the v3 config snippet below is kept as the token reference only.
+
 ```ts
+// Reference only (v3 idiom) — live mapping lives in app/globals.css.
 theme: { extend: {
   colors: {
     background: "var(--background)", surface: "var(--surface)",
