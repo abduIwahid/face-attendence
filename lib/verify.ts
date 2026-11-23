@@ -10,18 +10,41 @@ import { isFaceMatch } from "./matching.ts";
  *   1. RATE_LIMITED      — too many attempts for this roll number
  *   2. NOT_REGISTERED    — no student with this roll number
  *   3. ALREADY_MARKED    — a PRESENT row already exists for today
- *   4. GPS_INACCURATE    — fix coarser than the 50 m cap is not a location proof
+ *   4. GPS_INACCURATE    — fix coarser than the 250 m cap is not a location proof
  *   5. FACE_NOT_MATCHED  — face distance at/above the ADR-006 threshold
- *   6. TOO_FAR           — outside the class radius
+ *   6. TOO_FAR           — effective distance outside the class radius
  *   7. PRESENT           — everything passed
+ *
+ * The radius is judged on the **effective distance** (ADR-009):
+ * `max(0, raw distance − GPS accuracy)`. Indoor GPS drift of 100–200 m is
+ * the normal classroom case, not an exception — a student whose raw fix
+ * lands 165 m away with ±160 m accuracy may genuinely be in the room.
+ * Outcomes still carry the RAW distance, and the route stores raw distance
+ * + accuracy on the attendance row, so a teacher can audit marginal passes.
  *
  * `faceDistance` / `distanceMeters` are only consulted after the gates that
  * precede them, so the route may pass null when they could not be computed
  * (e.g. no registered descriptor to compare against).
  */
 
-/** GPS accuracy cap in metres (brain/SECURITY.md, ADR-004). */
-export const GPS_ACCURACY_CAP_METERS = 50;
+/**
+ * GPS accuracy cap in metres (brain/SECURITY.md, ADR-009 — raised from
+ * ADR-004's 50 m: a single indoor fix is routinely coarser than 50 m, and
+ * the client now samples for the best fix before submitting).
+ */
+export const GPS_ACCURACY_CAP_METERS = 250;
+
+/**
+ * Accuracy-aware distance (ADR-009): the raw haversine distance minus the
+ * fix's own error estimate, floored at 0. This is the value the radius
+ * decision uses; the raw distance is what gets stored and displayed.
+ */
+export function effectiveDistanceMeters(
+  distanceMeters: number,
+  gpsAccuracyMeters: number,
+): number {
+  return Math.max(0, distanceMeters - gpsAccuracyMeters);
+}
 
 export interface VerifyFacts {
   rateLimited: boolean;
@@ -64,7 +87,10 @@ export function decideVerifyOutcome(facts: VerifyFacts): VerifyOutcome {
   }
   if (
     facts.distanceMeters === null ||
-    !isWithinRadius(facts.distanceMeters, facts.radiusMeters)
+    !isWithinRadius(
+      effectiveDistanceMeters(facts.distanceMeters, facts.gpsAccuracyMeters),
+      facts.radiusMeters,
+    )
   ) {
     return {
       kind: "TOO_FAR",

@@ -30,8 +30,8 @@ test("isWithinRadius: boundary is inclusive", () => {
   assert.equal(isWithinRadius(101, 100), false);
 });
 
-test("isGpsAccurate: default cap is 50 m", () => {
-  assert.equal(isGpsAccurate(50), true);
-  assert.equal(isGpsAccurate(51), false);
+test("isGpsAccurate: default cap is 250 m (ADR-009)", () => {
+  assert.equal(isGpsAccurate(250), true);
+  assert.equal(isGpsAccurate(251), false);
   assert.equal(isGpsAccurate(80, 100), true);
 });

@@ -152,7 +152,7 @@ export async function POST(request: Request) {
       return fail(
         422,
         "GPS_INACCURATE",
-        "Your GPS accuracy is too rough to prove you are here (it needs to be ±50 m or better). Stand near a window and try again.",
+        "Your GPS accuracy is too rough to prove you are here (a fix worse than ±250 m cannot be used). Stand near a window or step outside and try again.",
       );
     case "FACE_NOT_MATCHED":
     case "TOO_FAR":

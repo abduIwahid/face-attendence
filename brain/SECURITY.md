@@ -37,7 +37,7 @@ Biometric data is in scope: face descriptors can identify a person. Treat this f
 ## Validation & limits
 - Zod schemas in `lib/validation.ts` are the single source; API routes reject on first failed parse with the standard error format.
 - Rate limits per API_SPEC.md (verify 10/roll/10 min; descriptor fetch 30/IP/10 min; register 5/IP/hour).
-- GPS accuracy cap: attempts with `gps_accuracy_meters > 50` are rejected as GPS_INACCURATE — a coarse fix is not a location proof.
+- GPS accuracy cap: attempts with `gps_accuracy_meters > 250` are rejected as GPS_INACCURATE — a fix coarser than that is not a location proof. Below the cap, the radius is judged on the accuracy-aware effective distance (`max(0, raw − accuracy)`, ADR-009); raw distance + accuracy are stored on every row for audit.
 
 ## Headers & platform
 - Next.js defaults + `Content-Security-Policy` allowing self + Supabase origin only; camera requires HTTPS (Vercel provides it; localhost exempt for dev).

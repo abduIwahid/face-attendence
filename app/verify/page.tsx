@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import CameraCapture, { type FaceCapture } from "../../components/CameraCapture";
 import LocationStatus, { type LocationState } from "../../components/LocationStatus";
 import { haversineMeters } from "../../lib/geo";
+import { sampleBestPosition } from "../../lib/geolocation";
+import { GPS_ACCURACY_CAP_METERS } from "../../lib/verify";
 
 interface ClassSettings {
   class_name: string | null;
@@ -37,6 +39,7 @@ export default function VerifyPage() {
   const [captureSession, setCaptureSession] = useState(0);
   const [location, setLocation] = useState<GeoFix | null>(null);
   const [locationState, setLocationState] = useState<LocationState>("idle");
+  const [samplingAccuracy, setSamplingAccuracy] = useState<number | null>(null);
   const [settings, setSettings] = useState<ClassSettings | null>(null);
   const [settingsMissing, setSettingsMissing] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -78,29 +81,36 @@ export default function VerifyPage() {
         )
       : null;
 
-  function handleShareLocation() {
+  /**
+   * Best-of-several sampling (lib/geolocation.ts, ADR-009): a single-shot
+   * fix indoors can be 100–200 m off, so sample for up to ~10 s and keep
+   * the most accurate reading; the best-so-far fix drives the live
+   * distance preview while sampling runs.
+   */
+  async function handleShareLocation() {
     if (!("geolocation" in navigator)) {
       setLocationState("unavailable");
       return;
     }
-    setLocationState("requesting");
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const accuracyMeters = Math.max(1, Math.round(position.coords.accuracy));
-        setLocation({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          accuracyMeters,
-        });
-        setLocationState(accuracyMeters > 50 ? "inaccurate" : "ok");
+    setLocationState("sampling");
+    setSamplingAccuracy(null);
+    const sampled = await sampleBestPosition({
+      onUpdate: (fix) => {
+        setSamplingAccuracy(fix.accuracyMeters);
+        setLocation(fix);
       },
-      (geoError) => {
-        setLocationState(
-          geoError.code === geoError.PERMISSION_DENIED ? "denied" : "unavailable",
-        );
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
-    );
+    });
+    setSamplingAccuracy(null);
+    if (sampled.kind === "ok") {
+      setLocation(sampled.fix);
+      setLocationState(
+        sampled.fix.accuracyMeters > GPS_ACCURACY_CAP_METERS ? "inaccurate" : "ok",
+      );
+    } else if (sampled.kind === "denied") {
+      setLocationState("denied");
+    } else {
+      setLocationState("unavailable");
+    }
   }
 
   function resetAttempt() {
@@ -225,21 +235,30 @@ export default function VerifyPage() {
             <button
               type="button"
               onClick={handleShareLocation}
-              disabled={locationState === "requesting"}
+              disabled={locationState === "sampling"}
               className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-border bg-surface px-4 text-base font-semibold text-primary transition-colors hover:bg-surface-muted disabled:opacity-60"
             >
               <MapPin className="h-5 w-5" aria-hidden />
-              {location ? "Share my location again" : "Share my location"}
+              {locationState === "sampling"
+                ? "Improving location accuracy…"
+                : location
+                  ? "Share my location again"
+                  : "Share my location"}
             </button>
             <LocationStatus
               state={locationState}
-              accuracyMeters={location?.accuracyMeters}
+              accuracyMeters={
+                locationState === "sampling"
+                  ? (samplingAccuracy ?? undefined)
+                  : location?.accuracyMeters
+              }
               distanceMeters={estimatedDistance}
               radiusMeters={settings?.radius_meters}
             />
             <p className="text-xs leading-relaxed text-secondary">
-              Phone GPS can be inaccurate indoors. If your fix is too rough,
-              stand near a window and share your location again.
+              Phone GPS can be inaccurate indoors, so your location is sampled
+              for a few seconds and the most accurate fix is used. If it stays
+              rough, stand near a window and share your location again.
             </p>
           </div>
 
@@ -305,9 +324,11 @@ export default function VerifyPage() {
                 ? "Enter your roll number to continue."
                 : !capture
                   ? "Capture your selfie above, then share your location."
-                  : locationState !== "ok"
-                    ? "Share a location fix accurate to ±50 m or better."
-                    : "Everything is ready — tap Mark attendance."}
+                  : locationState === "sampling"
+                    ? "Improving location accuracy — hold still for a few seconds."
+                    : locationState !== "ok"
+                      ? "Share your location — it is sampled for a few seconds and the most accurate fix is kept."
+                      : "Everything is ready — tap Mark attendance."}
             </p>
           ) : null}
         </form>

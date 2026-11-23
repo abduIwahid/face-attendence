@@ -6,7 +6,8 @@
 | Match threshold | Max Euclidean distance between two descriptors to call them the same person. Default 0.6, tuned in Phase 2 (ADR-006). |
 | Radius | Max allowed distance (m) between the student's GPS fix and the class location. Default 100, teacher-configurable. |
 | Haversine | Formula for straight-line distance between two lat/lng points on a sphere; implemented in `lib/geo.ts`. |
-| GPS accuracy | The phone's own estimate of position error (m), returned with every Geolocation fix; recorded per attempt, capped at 50 m. |
+| GPS accuracy | The phone's own estimate of position error (m), returned with every Geolocation fix; recorded per attempt, hard-capped at 250 m (ADR-009). The client samples several fixes and keeps the most accurate one. |
+| Effective distance | Raw haversine distance minus the fix's GPS accuracy, floored at 0 — the value the radius decision uses (ADR-009). Raw distance is what gets stored and displayed. |
 | Proxy attendance | Marking an absent student present — the problem this project exists to kill. |
 | Liveness | Proving a live person is in front of the camera (vs a photo). NOT in v1 — documented limit. |
 | RLS | Supabase Row Level Security — database-level access rules; the second wall behind API-route checks. |

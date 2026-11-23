@@ -2,6 +2,7 @@
 
 import { CheckCircle2, Loader2, MapPin } from "lucide-react";
 import { useEffect, useState } from "react";
+import { sampleBestPosition } from "../lib/geolocation";
 
 interface ClassSettingsData {
   class_name: string | null;
@@ -23,6 +24,7 @@ export default function ClassLocationSettings() {
   const [longitude, setLongitude] = useState<number | null>(null);
   const [radius, setRadius] = useState(100);
   const [gpsAccuracy, setGpsAccuracy] = useState<number | null>(null);
+  const [samplingAccuracy, setSamplingAccuracy] = useState<number | null>(null);
   const [locating, setLocating] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loaded, setLoaded] = useState(false);
@@ -60,7 +62,12 @@ export default function ClassLocationSettings() {
     };
   }, []);
 
-  function handleUseMyLocation() {
+  /**
+   * Best-of-several sampling (lib/geolocation.ts, ADR-009): the class
+   * point anchors every student's check, so it gets the same sampled,
+   * most-accurate fix as /verify instead of a single-shot reading.
+   */
+  async function handleUseMyLocation() {
     if (!("geolocation" in navigator)) {
       setError("This device cannot provide a location.");
       return;
@@ -68,21 +75,25 @@ export default function ClassLocationSettings() {
     setLocating(true);
     setError(null);
     setMessage(null);
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setLatitude(position.coords.latitude);
-        setLongitude(position.coords.longitude);
-        setGpsAccuracy(Math.max(1, Math.round(position.coords.accuracy)));
-        setLocating(false);
-      },
-      () => {
-        setError(
-          "Location could not be read. Allow location permission, stand near a window, and try again.",
-        );
-        setLocating(false);
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 },
-    );
+    setSamplingAccuracy(null);
+    const sampled = await sampleBestPosition({
+      onUpdate: (fix) => setSamplingAccuracy(fix.accuracyMeters),
+    });
+    setSamplingAccuracy(null);
+    setLocating(false);
+    if (sampled.kind === "ok") {
+      setLatitude(sampled.fix.latitude);
+      setLongitude(sampled.fix.longitude);
+      setGpsAccuracy(sampled.fix.accuracyMeters);
+    } else if (sampled.kind === "denied") {
+      setError(
+        "Location permission was denied. Allow location access in the browser prompt, then try again.",
+      );
+    } else {
+      setError(
+        "Location could not be read. Stand near a window, and try again.",
+      );
+    }
   }
 
   async function handleSave(event: React.FormEvent<HTMLFormElement>) {
@@ -173,7 +184,11 @@ export default function ClassLocationSettings() {
             ) : (
               <MapPin className="h-5 w-5" aria-hidden />
             )}
-            {locating ? "Locating…" : "Use my current location"}
+            {locating
+              ? samplingAccuracy !== null
+                ? `Improving location accuracy… ±${samplingAccuracy} m`
+                : "Improving location accuracy…"
+              : "Use my current location"}
           </button>
           <p className="text-sm text-secondary" role="status">
             {latitude !== null && longitude !== null

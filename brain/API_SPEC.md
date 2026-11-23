@@ -31,7 +31,7 @@ Public class location for the distance check.
 ### POST /api/verify
 Submit a verification attempt.
 - Body: `{ roll_number, descriptor: number[128], latitude, longitude, gps_accuracy_meters }`
-- Server computes: face match (euclidean vs stored descriptor — server-side compare is the v1 default per ARCHITECTURE.md hardening note; if client-side compare is used in the first cut, this body carries `face_result` instead and the deviation is logged in DECISIONS.md), haversine distance, radius pass, accuracy cap (reject if `gps_accuracy_meters` > 50), duplicate-PRESENT check.
+- Server computes: face match (euclidean vs stored descriptor — server-side compare is the v1 default per ARCHITECTURE.md hardening note; if client-side compare is used in the first cut, this body carries `face_result` instead and the deviation is logged in DECISIONS.md), haversine distance, radius pass (on the accuracy-aware effective distance `max(0, raw − accuracy)`, ADR-009), accuracy cap (reject if `gps_accuracy_meters` > 250), duplicate-PRESENT check.
 - Writes the attendance row either way (PRESENT or FAILED + reason) if SHOULD-scope logging is in.
 - 200: `{ status: "PRESENT" | "FAILED", face_match, distance_meters, reason? }`
 - Errors: `NOT_REGISTERED` (404), `ALREADY_MARKED` (409), `GPS_INACCURATE` (422), `RATE_LIMITED` (429)

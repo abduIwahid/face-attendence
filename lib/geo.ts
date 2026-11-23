@@ -33,7 +33,9 @@ export function isWithinRadius(distanceMeters: number, radiusMeters: number): bo
 /**
  * GPS accuracy guard (brain/SECURITY.md): a fix coarser than the cap is not
  * a location proof. The verify route rejects with GPS_INACCURATE above it.
+ * Cap is 250 m since ADR-009 (indoor drift makes 50 m unusable in practice;
+ * the radius decision itself is accuracy-aware — see lib/verify.ts).
  */
-export function isGpsAccurate(accuracyMeters: number, capMeters = 50): boolean {
+export function isGpsAccurate(accuracyMeters: number, capMeters = 250): boolean {
   return accuracyMeters <= capMeters;
 }

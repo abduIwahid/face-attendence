@@ -15,7 +15,7 @@ This app processes **biometric data** (face descriptors) and **location data**. 
 - Status: TBD (needs human decision) — also CUT LIST item 3 in BUILD_PLAN.md.
 
 ## Honest limits (say these out loud — in the demo, the README and interviews)
-- **GPS is not proof of presence.** Phone GPS drifts indoors (the source reel itself warns about this: "stand near a window and retry"). Accuracy is recorded on every row; attempts with accuracy worse than 50 m are rejected rather than silently trusted.
+- **GPS is not proof of presence.** Phone GPS drifts indoors (the source reel itself warns about this: "stand near a window and retry"). Accuracy is recorded on every row; attempts with accuracy worse than 250 m are rejected rather than silently trusted, and below that cap the radius is judged on the accuracy-aware effective distance (ADR-009) so indoor drift does not falsely expel students who are actually in the room.
 - **GPS can be spoofed** with mock-location tools. The radius check raises the cost of a proxy; it does not make spoofing impossible. JUDGE_QA.md has the honest answer.
 - **No liveness check in v1** means a photo of a face may pass the matcher. Documented, not hidden (RISKS.md).
 - **Face matching is not equally accurate for everyone.** Lighting, camera quality, glasses and head coverings change results; published research shows demographic accuracy gaps in face recognition generally. Mitigations here: generous retry flow, failure reasons shown to the student, and a manual teacher override path in a real deployment (teacher can mark a present-in-person student whose check failed — v1: teacher notes it; the log stays honest).
