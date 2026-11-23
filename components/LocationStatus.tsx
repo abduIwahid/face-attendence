@@ -86,7 +86,7 @@ export default function LocationStatus({
       !tooFar;
     return (
       <div className="flex flex-col gap-1">
-        <p role="status" className="flex items-center gap-2 text-sm font-medium text-accent-strong">
+        <p role="status" className="flex items-center gap-2 text-sm font-medium text-success-strong">
           <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden />
           Location found — accuracy ±{accuracyMeters} m.
         </p>

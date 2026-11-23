@@ -10,7 +10,7 @@ export type FaceHint = "checking" | "none" | "one" | "multiple";
 export default function FaceStatus({ hint }: { hint: FaceHint }) {
   if (hint === "one") {
     return (
-      <p role="status" className="flex items-center gap-2 text-sm font-medium text-accent-strong">
+      <p role="status" className="flex items-center gap-2 text-sm font-medium text-success-strong">
         <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden />
         Face found — hold still, then tap Capture.
       </p>

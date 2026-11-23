@@ -4,7 +4,9 @@ import { AlertTriangle, CheckCircle2, Loader2, MapPin } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import CameraCapture, { type FaceCapture } from "../../components/CameraCapture";
+import FloatingInput from "../../components/FloatingInput";
 import LocationStatus, { type LocationState } from "../../components/LocationStatus";
+import SiteHeader from "../../components/SiteHeader";
 import { haversineMeters } from "../../lib/geo";
 import { sampleBestPosition } from "../../lib/geolocation";
 import { GPS_ACCURACY_CAP_METERS } from "../../lib/verify";
@@ -175,8 +177,10 @@ export default function VerifyPage() {
     rollNumber.trim().length >= 3;
 
   return (
-    <main className="flex flex-1 justify-center px-6 py-12">
-      <div className="animate-rise w-full max-w-md">
+    <div className="flex flex-1 flex-col">
+      <SiteHeader />
+      <main className="flex flex-1 justify-center px-4 py-12 sm:px-6">
+        <div className="animate-rise w-full max-w-md">
         <p className="text-xs font-semibold uppercase tracking-widest text-accent-strong">
           Mark attendance
         </p>
@@ -205,19 +209,15 @@ export default function VerifyPage() {
         ) : null}
 
         <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-5">
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="rollNumber" className="text-sm font-medium text-primary">
-              Roll number
-            </label>
-            <input
-              id="rollNumber"
-              type="text"
-              value={rollNumber}
-              onChange={(event) => setRollNumber(event.target.value)}
-              className="min-h-11 rounded-lg border border-border bg-surface px-3 text-base uppercase text-primary outline-none focus:border-accent focus:ring-2 focus:ring-accent"
-              placeholder="e.g. FA24-BAI-024"
-            />
-          </div>
+          <FloatingInput
+            id="rollNumber"
+            label="Roll number"
+            type="text"
+            value={rollNumber}
+            onChange={(event) => setRollNumber(event.target.value)}
+            hint="e.g. FA24-BAI-024"
+            className="uppercase"
+          />
 
           <div className="flex flex-col gap-2">
             <p className="text-sm font-medium text-primary">1. Take a live selfie</p>
@@ -236,7 +236,7 @@ export default function VerifyPage() {
               type="button"
               onClick={handleShareLocation}
               disabled={locationState === "sampling"}
-              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-border bg-surface px-4 text-base font-semibold text-primary transition-colors hover:bg-surface-muted disabled:opacity-60"
+              className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-accent-soft px-4 text-base font-semibold text-accent-strong transition-colors hover:bg-field disabled:opacity-60"
             >
               <MapPin className="h-5 w-5" aria-hidden />
               {locationState === "sampling"
@@ -263,12 +263,12 @@ export default function VerifyPage() {
           </div>
 
           {result?.status === "PRESENT" ? (
-            <div role="status" className="rounded-xl border border-accent bg-accent-soft px-5 py-4">
-              <p className="flex items-center gap-2 text-lg font-bold text-accent-strong">
+            <div role="status" className="rounded-xl border border-success/40 bg-success-soft px-5 py-4">
+              <p className="flex items-center gap-2 text-lg font-bold text-success-strong">
                 <CheckCircle2 className="h-6 w-6 shrink-0" aria-hidden />
                 Present
               </p>
-              <p className="mt-1 text-sm leading-relaxed text-accent-strong">
+              <p className="mt-1 text-sm leading-relaxed text-success-strong">
                 Face matched, and you are {result.distance_meters} m from the
                 class — inside the radius. Your attendance for today is
                 recorded.
@@ -340,7 +340,8 @@ export default function VerifyPage() {
           </Link>
           .
         </p>
-      </div>
-    </main>
+        </div>
+      </main>
+    </div>
   );
 }

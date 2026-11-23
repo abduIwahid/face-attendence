@@ -258,7 +258,7 @@ export default function CameraCapture({
         <FaceStatus hint={faceHint} />
       ) : null}
       {status === "captured" ? (
-        <p role="status" className="text-sm font-medium text-accent-strong">
+        <p role="status" className="text-sm font-medium text-success-strong">
           Selfie captured. If it does not look clear, retake it.
         </p>
       ) : null}

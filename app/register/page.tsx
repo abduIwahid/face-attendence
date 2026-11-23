@@ -4,6 +4,8 @@ import { CheckCircle2, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import CameraCapture, { type FaceCapture } from "../../components/CameraCapture";
+import FloatingInput from "../../components/FloatingInput";
+import SiteHeader from "../../components/SiteHeader";
 
 /**
  * Registration page — Phase 2, live (brain/BUILD_PLAN.md).
@@ -70,10 +72,12 @@ export default function RegisterPage() {
 
   if (registeredName) {
     return (
-      <main className="flex flex-1 justify-center px-6 py-12">
-        <div className="animate-rise w-full max-w-md">
-          <div className="rounded-xl border border-border bg-surface p-8 text-center shadow-md">
-            <CheckCircle2 className="mx-auto h-12 w-12 text-accent-strong" aria-hidden />
+      <div className="flex flex-1 flex-col">
+        <SiteHeader />
+        <main className="flex flex-1 justify-center px-4 py-12 sm:px-6">
+          <div className="animate-rise w-full max-w-md">
+            <div className="rounded-xl border border-border bg-surface p-8 text-center shadow-md">
+              <CheckCircle2 className="mx-auto h-12 w-12 text-success" aria-hidden />
             <h1 className="mt-4 text-2xl font-bold leading-tight text-primary">
               You are registered, {registeredName}
             </h1>
@@ -84,21 +88,24 @@ export default function RegisterPage() {
               attendance. You can ask your teacher to delete your record at
               any time.
             </p>
-            <Link
-              href="/verify"
-              className="mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-accent px-4 text-base font-semibold text-white transition-colors hover:bg-accent-strong"
-            >
-              Mark attendance
-            </Link>
+              <Link
+                href="/verify"
+                className="mt-6 inline-flex min-h-11 w-full items-center justify-center rounded-lg bg-accent px-4 text-base font-semibold text-white transition-colors hover:bg-accent-strong"
+              >
+                Mark attendance
+              </Link>
+            </div>
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
     );
   }
 
   return (
-    <main className="flex flex-1 justify-center px-6 py-12">
-      <div className="animate-rise w-full max-w-md">
+    <div className="flex flex-1 flex-col">
+      <SiteHeader />
+      <main className="flex flex-1 justify-center px-4 py-12 sm:px-6">
+        <div className="animate-rise w-full max-w-md">
         <p className="text-xs font-semibold uppercase tracking-widest text-accent-strong">
           Student registration
         </p>
@@ -112,41 +119,32 @@ export default function RegisterPage() {
         </p>
 
         <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-5">
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="name" className="text-sm font-medium text-primary">
-              Full name
-            </label>
-            <input
-              id="name"
-              type="text"
-              autoComplete="name"
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-              className="min-h-11 rounded-lg border border-border bg-surface px-3 text-base text-primary outline-none focus:border-accent focus:ring-2 focus:ring-accent"
-              placeholder="e.g. Abdul Wahid"
-            />
-          </div>
+          <FloatingInput
+            id="name"
+            label="Full name"
+            type="text"
+            autoComplete="name"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            hint="e.g. Abdul Wahid"
+          />
 
-          <div className="flex flex-col gap-1.5">
-            <label htmlFor="rollNumber" className="text-sm font-medium text-primary">
-              Roll number
-            </label>
-            <input
-              id="rollNumber"
-              type="text"
-              value={rollNumber}
-              onChange={(event) => setRollNumber(event.target.value)}
-              className="min-h-11 rounded-lg border border-border bg-surface px-3 text-base uppercase text-primary outline-none focus:border-accent focus:ring-2 focus:ring-accent"
-              placeholder="e.g. FA24-BAI-024"
-            />
-          </div>
+          <FloatingInput
+            id="rollNumber"
+            label="Roll number"
+            type="text"
+            value={rollNumber}
+            onChange={(event) => setRollNumber(event.target.value)}
+            hint="e.g. FA24-BAI-024"
+            className="uppercase"
+          />
 
           <label className="flex items-start gap-3 text-sm leading-relaxed text-secondary">
             <input
               type="checkbox"
               checked={consent}
               onChange={(event) => setConsent(event.target.checked)}
-              className="mt-0.5 h-5 w-5 shrink-0 accent-accent-strong"
+              className="mt-0.5 h-5 w-5 shrink-0 accent-accent"
             />
             <span>
               I agree to store my face data (a photo and a mathematical
@@ -188,7 +186,8 @@ export default function RegisterPage() {
                 : "Your selfie is ready — tap Register to save it."}
           </p>
         </form>
-      </div>
-    </main>
+        </div>
+      </main>
+    </div>
   );
 }

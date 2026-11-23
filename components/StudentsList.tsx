@@ -158,19 +158,27 @@ export default function StudentsList() {
                 key={student.id}
                 className="flex flex-wrap items-center justify-between gap-3 py-3"
               >
-                <div className="min-w-0">
-                  <p className="truncate text-base font-medium text-primary">
-                    {student.name}
-                  </p>
-                  <p className="text-sm text-secondary">
-                    {student.roll_number} · Registered{" "}
-                    {new Date(student.created_at).toLocaleDateString("en-GB", {
-                      timeZone: "Asia/Karachi",
-                      day: "numeric",
-                      month: "short",
-                      year: "numeric",
-                    })}
-                  </p>
+                <div className="flex min-w-0 items-center gap-3">
+                  <span
+                    aria-hidden
+                    className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-accent-soft text-sm font-bold text-accent-strong"
+                  >
+                    {student.name.trim().charAt(0).toUpperCase() || "?"}
+                  </span>
+                  <div className="min-w-0">
+                    <p className="truncate text-base font-medium text-primary">
+                      {student.name}
+                    </p>
+                    <p className="text-sm text-secondary">
+                      {student.roll_number} · Registered{" "}
+                      {new Date(student.created_at).toLocaleDateString("en-GB", {
+                        timeZone: "Asia/Karachi",
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </p>
+                  </div>
                 </div>
                 {confirmingId === student.id ? (
                   <div className="flex flex-wrap items-center gap-2">

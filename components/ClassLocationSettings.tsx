@@ -3,6 +3,7 @@
 import { CheckCircle2, Loader2, MapPin } from "lucide-react";
 import { useEffect, useState } from "react";
 import { sampleBestPosition } from "../lib/geolocation";
+import FloatingInput from "./FloatingInput";
 
 interface ClassSettingsData {
   class_name: string | null;
@@ -172,26 +173,21 @@ export default function ClassLocationSettings() {
       </p>
 
       <form onSubmit={handleSave} className="mt-5 flex flex-col gap-4">
-        <div className="flex flex-col gap-1.5">
-          <label htmlFor="className" className="text-sm font-medium text-primary">
-            Class name
-          </label>
-          <input
-            id="className"
-            type="text"
-            value={className}
-            onChange={(event) => setClassName(event.target.value)}
-            className="min-h-11 rounded-lg border border-border bg-surface px-3 text-base text-primary outline-none focus:border-accent focus:ring-2 focus:ring-accent"
-            placeholder="e.g. FA24-BAI — Demo Class"
-          />
-        </div>
+        <FloatingInput
+          id="className"
+          label="Class name"
+          type="text"
+          value={className}
+          onChange={(event) => setClassName(event.target.value)}
+          hint="e.g. FA24-BAI — Demo Class"
+        />
 
         <div className="flex flex-wrap items-end gap-4">
           <button
             type="button"
             onClick={handleUseMyLocation}
             disabled={locating}
-            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-border bg-surface px-4 text-base font-semibold text-primary transition-colors hover:bg-surface-muted disabled:opacity-60"
+            className="inline-flex min-h-11 items-center justify-center gap-2 rounded-lg bg-accent-soft px-4 text-base font-semibold text-accent-strong transition-colors hover:bg-field disabled:opacity-60"
           >
             {locating ? (
               <Loader2 className="h-5 w-5 animate-spin" aria-hidden />
@@ -225,13 +221,13 @@ export default function ClassLocationSettings() {
             step={10}
             value={radius}
             onChange={(event) => setRadius(Number(event.target.value))}
-            className="min-h-11 w-40 rounded-lg border border-border bg-surface px-3 text-base text-primary outline-none focus:border-accent focus:ring-2 focus:ring-accent"
+            className="min-h-11 w-40 rounded-lg border border-transparent bg-field px-3 text-base text-primary outline-none transition-shadow hover:bg-field-hover focus:bg-field focus:ring-2 focus:ring-accent"
           />
           <p className="text-xs text-secondary">Between 10 and 1000 m. Default is 100 m.</p>
         </div>
 
         {message ? (
-          <p role="status" className="flex items-center gap-2 rounded-lg bg-accent-soft px-4 py-3 text-sm font-medium text-accent-strong">
+          <p role="status" className="flex items-center gap-2 rounded-lg bg-success-soft px-4 py-3 text-sm font-medium text-success-strong">
             <CheckCircle2 className="h-4 w-4 shrink-0" aria-hidden />
             {message}
           </p>

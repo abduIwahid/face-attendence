@@ -1,21 +1,36 @@
 "use client";
 
+import { LayoutDashboard, Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const LINKS = [
-  { href: "/teacher", label: "Dashboard" },
-  { href: "/teacher/settings", label: "Class settings" },
+  { href: "/teacher", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/teacher/settings", label: "Class settings", icon: Settings },
 ];
 
 /**
- * Teacher-area navigation (brain/DESIGN.md Nav states: default / active =
- * accent text + 2px underline / focus-visible ring).
+ * Teacher-area navigation in the Aurora dashboard language (ADR-011):
+ * sidenav items on desktop, a horizontal pill row on smaller screens.
+ * Active = accent-soft fill + accent text (the MUI list-item treatment);
+ * every state keeps a visible focus ring.
  */
-export default function TeacherNav() {
+export default function TeacherNav({
+  orientation = "horizontal",
+}: {
+  orientation?: "vertical" | "horizontal";
+}) {
   const pathname = usePathname();
+  const vertical = orientation === "vertical";
   return (
-    <nav aria-label="Teacher" className="flex items-center gap-1">
+    <nav
+      aria-label="Teacher"
+      className={
+        vertical
+          ? "flex flex-col gap-1"
+          : "flex items-center gap-1 overflow-x-auto"
+      }
+    >
       {LINKS.map((link) => {
         const active = pathname === link.href;
         return (
@@ -23,12 +38,15 @@ export default function TeacherNav() {
             key={link.href}
             href={link.href}
             aria-current={active ? "page" : undefined}
-            className={
+            className={`inline-flex min-h-11 items-center gap-2.5 whitespace-nowrap rounded-lg px-3 text-sm outline-none transition-colors focus-visible:ring-2 focus-visible:ring-accent ${
+              vertical ? "w-full" : ""
+            } ${
               active
-                ? "inline-flex min-h-11 items-center border-b-2 border-accent px-3 text-sm font-semibold text-accent-strong outline-none focus-visible:ring-2 focus-visible:ring-accent"
-                : "inline-flex min-h-11 items-center border-b-2 border-transparent px-3 text-sm font-medium text-secondary transition-colors hover:text-primary outline-none focus-visible:ring-2 focus-visible:ring-accent"
-            }
+                ? "bg-accent-soft font-semibold text-accent-strong"
+                : "font-medium text-secondary hover:bg-surface-muted hover:text-primary"
+            }`}
           >
+            <link.icon className="h-5 w-5 shrink-0" aria-hidden />
             {link.label}
           </Link>
         );

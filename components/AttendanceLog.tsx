@@ -139,27 +139,48 @@ export default function AttendanceLog() {
             onChange={(event) => {
               if (event.target.value) setDate(event.target.value);
             }}
-            className="min-h-11 rounded-lg border border-border bg-surface px-3 text-base text-primary outline-none focus:border-accent focus:ring-2 focus:ring-accent"
+            className="min-h-11 rounded-lg border border-transparent bg-field px-3 text-base text-primary outline-none transition-shadow hover:bg-field-hover focus:bg-field focus:ring-2 focus:ring-accent"
           />
         </div>
         <button
           type="button"
           onClick={() => setDate(todayInKarachi())}
-          className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-border bg-surface px-4 text-base font-semibold text-primary transition-colors hover:bg-surface-muted"
+          className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-accent-soft px-4 text-base font-semibold text-accent-strong transition-colors hover:bg-field"
         >
           <CalendarDays className="h-5 w-5" aria-hidden />
           Today
         </button>
-        {state === "ready" && rows.length > 0 ? (
-          <p className="text-sm text-secondary" role="status">
-            <span className="font-semibold text-success">{presentCount} present</span>
-            {" · "}
-            <span className="font-semibold text-danger">{failedCount} failed</span>
-            {" · "}
-            {rows.length} total
-          </p>
-        ) : null}
       </div>
+
+      {/* Stat cards (Aurora dashboard pattern): the selected day's counts */}
+      {state === "ready" ? (
+        <div className="mt-5 grid grid-cols-3 gap-3 sm:gap-4" role="status">
+          <div className="rounded-xl border border-border bg-surface p-4 shadow-sm">
+            <p className="text-xs font-semibold uppercase tracking-wide text-secondary">
+              Present
+            </p>
+            <p className="mt-1 text-2xl font-bold leading-none text-success sm:text-3xl">
+              {presentCount}
+            </p>
+          </div>
+          <div className="rounded-xl border border-border bg-surface p-4 shadow-sm">
+            <p className="text-xs font-semibold uppercase tracking-wide text-secondary">
+              Failed
+            </p>
+            <p className="mt-1 text-2xl font-bold leading-none text-danger sm:text-3xl">
+              {failedCount}
+            </p>
+          </div>
+          <div className="rounded-xl border border-border bg-surface p-4 shadow-sm">
+            <p className="text-xs font-semibold uppercase tracking-wide text-secondary">
+              Total attempts
+            </p>
+            <p className="mt-1 text-2xl font-bold leading-none text-primary sm:text-3xl">
+              {rows.length}
+            </p>
+          </div>
+        </div>
+      ) : null}
 
       {exportError ? (
         <p role="alert" className="mt-4 rounded-lg bg-danger-soft px-4 py-3 text-sm text-danger">
@@ -204,13 +225,13 @@ export default function AttendanceLog() {
           <div className="overflow-x-auto">
             <table className="w-full min-w-[640px] border-collapse text-left text-sm">
               <thead>
-                <tr className="bg-surface-muted text-primary">
-                  <th scope="col" className="px-3 py-2.5 font-semibold">Time</th>
-                  <th scope="col" className="px-3 py-2.5 font-semibold">Name</th>
-                  <th scope="col" className="px-3 py-2.5 font-semibold">Roll Number</th>
-                  <th scope="col" className="px-3 py-2.5 font-semibold">Face Match</th>
-                  <th scope="col" className="px-3 py-2.5 font-semibold">Distance</th>
-                  <th scope="col" className="px-3 py-2.5 font-semibold">Result</th>
+                <tr className="bg-surface-muted text-secondary">
+                  <th scope="col" className="px-3 py-2.5 text-xs font-bold uppercase tracking-wide">Time</th>
+                  <th scope="col" className="px-3 py-2.5 text-xs font-bold uppercase tracking-wide">Name</th>
+                  <th scope="col" className="px-3 py-2.5 text-xs font-bold uppercase tracking-wide">Roll Number</th>
+                  <th scope="col" className="px-3 py-2.5 text-xs font-bold uppercase tracking-wide">Face Match</th>
+                  <th scope="col" className="px-3 py-2.5 text-xs font-bold uppercase tracking-wide">Distance</th>
+                  <th scope="col" className="px-3 py-2.5 text-xs font-bold uppercase tracking-wide">Result</th>
                 </tr>
               </thead>
               <tbody>
@@ -236,12 +257,16 @@ export default function AttendanceLog() {
                     </td>
                     <td className="px-3 py-2.5">
                       {row.status === "PRESENT" ? (
-                        <span className="font-semibold text-success">PRESENT</span>
+                        <span className="inline-flex items-center rounded-full bg-success-soft px-2.5 py-1 text-xs font-bold text-success-strong">
+                          PRESENT
+                        </span>
                       ) : (
                         <>
-                          <span className="font-semibold text-danger">FAILED</span>
+                          <span className="inline-flex items-center rounded-full bg-danger-soft px-2.5 py-1 text-xs font-bold text-danger">
+                            FAILED
+                          </span>
                           {row.failure_reason ? (
-                            <span className="block text-xs text-secondary">
+                            <span className="mt-1 block text-xs text-secondary">
                               {failureReasonLabel(row.failure_reason)}
                             </span>
                           ) : null}
