@@ -11,21 +11,21 @@ Budget ≈ 7 days part-time. Percentages are of total effort. Owner = Wadi for e
 - **Exit check:** empty app live on a real URL, opened on a phone.
 
 ## Phase 1 — Data model + settings + seed skeleton (8–25%)
-- [ ] Migrations: `students`, `class_settings`, `attendance` + RLS on (DATA_MODEL.md) — **SQL written + deployed (session 05): `supabase/migrations/20261123153000_phase_1_schema.sql` + one-paste copy `supabase/phase-1-schema.sql`. APPLIED ☐ — pending Wadi's paste into the dashboard SQL Editor (connector gets 403 on this project). This is the one Wadi action for Phase 1.**
-- [ ] Private Storage bucket `registration-photos` — included in the same Phase 1 SQL file; goes live with the paste above
+- [x] Migrations: `students`, `class_settings`, `attendance` + RLS on (DATA_MODEL.md) — SQL written in session 05; **APPLIED by Wadi 2026-11-23** (dashboard paste) and verified (Phase 1 exit check passed; teacher sign-in works)
+- [x] Private Storage bucket `registration-photos` — went live with the same paste; register route uploads to it (session 06)
 - [x] `lib/`: supabase clients, `geo.ts` (haversine) + unit test, Zod schemas — DONE 2026-11-23 (session 05): `lib/supabase/{client,server,admin}.ts`, `lib/geo.ts` + `lib/geo.test.ts` (5/5 passing), `lib/validation.ts`
-- [ ] `class_settings` row 1 seeded (demo location — DEMO_DATA.md) — seed statement included (commented) in the Phase 1 SQL; needs the on-site coordinates first
+- [ ] `class_settings` row 1 seeded (demo location — DEMO_DATA.md) — no SQL seed (coordinates are TBD-verify on site); the teacher setter on `/teacher` (session 06) now writes this row from the device's GPS — happens in Wadi's Phase 2 phone test
 - [x] Teacher auth wired (decision in DECISIONS.md) + empty teacher page behind it — DONE 2026-11-23 (session 05): Supabase Auth email/password; `/login` page; `/teacher` placeholder dashboard behind the server-side session guard (layout); logout. DECISIONS.md open question to be marked settled by Wadi.
-- **Exit check:** tables exist, RLS verified (anon key cannot read `students`) — pending the schema paste above.
+- **Exit check:** ✅ tables exist, RLS verified (anon key cannot read `students`), teacher sign-in confirmed by Wadi 2026-11-23.
 
 ## Phase 2 — Core feature (25–60%) — mock-first, then wire
-- [ ] Register page UI on stubbed capture → then real camera + face-api.js descriptor
-- [ ] POST /api/register (descriptor + photo validation)
-- [ ] Verify page UI (camera oval, location states) on stubbed results
-- [ ] Verify flow wired: descriptor fetch → match → geolocation → POST /api/verify
-- [ ] Server re-checks: haversine, accuracy cap, duplicate-per-day, rate limit
-- [ ] Threshold tuning session with demo students; record distances (ADR-006)
-- **Exit check:** Wadi registers and marks himself PRESENT on his phone, standing at the demo location.
+- [x] Register page UI on stubbed capture → then real camera + face-api.js descriptor — DONE 2026-11-23 (session 06): consent-gated CameraCapture, descriptor + photo, success panel
+- [x] POST /api/register (descriptor + photo validation) — DONE (session 06): spec error codes, duplicate + JPEG magic-byte checks, private-bucket upload, 5/IP/hour rate limit
+- [x] Verify page UI (camera oval, location states) on stubbed results — DONE (session 06): /verify with FaceStatus/LocationStatus states + plain-language result panels
+- [x] Verify flow wired: descriptor fetch → match → geolocation → POST /api/verify — DONE with a strengthening (session 06, ADR-008): the descriptor goes TO the server and the match is decided server-side; no descriptor is ever fetched to a browser
+- [x] Server re-checks: haversine, accuracy cap, duplicate-per-day, rate limit — DONE (session 06): `lib/verify.ts` ordered decision + tests; DB partial unique index is the race backstop
+- [ ] Threshold tuning session with demo students; record distances (ADR-006) — pending real faces (Phase 4 seed session); 0.6 default ships meanwhile
+- **Exit check:** Wadi registers and marks himself PRESENT on his phone, standing at the demo location — PENDING his phone test (session 06 lists the exact steps). Note: the minimal teacher class-location setter (Phase 3 settings scope) was pulled forward into Phase 2 — /verify cannot be exercised without a class location; the full settings page stays in Phase 3.
 
 ## Phase 3 — Secondary features + polish (60–75%)
 - [ ] Teacher log table (date filter) + SheetJS .xlsx export

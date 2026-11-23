@@ -23,6 +23,17 @@
 ## ADR-006 — 2026-11-23 — Match threshold: face-api.js default 0.6 euclidean, tune in Phase 2
 - **Why:** 0.6 is the library's documented default for "same person". Phase 2 tests with the 5 demo students and records the observed same-person / different-person distances in the session file before locking the value.
 
+## ADR-007 — 2026-11-23 — Rate limiting: in-memory fixed-window counters (v1)
+- **Options:** in-memory counters in the route process · a Supabase counter table · an external rate-limit service.
+- **Decision:** in-memory fixed-window counters (`lib/rateLimit.ts`), keyed per roll number (verify) and per IP (register).
+- **Why:** The API_SPEC.md limit numbers (verify 10/roll/10 min, register 5/IP/hour) are the contract; the storage behind them was explicitly TBD. In-memory is zero-setup and honest at classroom scale. Known limit: Vercel serverless instances do not share memory, so the effective limit is per-instance — accepted for v1, upgrade path is a Supabase counter table if abuse ever matters.
+
+## ADR-008 — 2026-11-23 — Package: @vladmandic/face-api; verify matching decided server-side
+- **Package:** the brain names "face-api.js"; the shipped package is **@vladmandic/face-api 1.7.15**, the maintained fork of face-api.js with the same API and the same model weights (self-hosted in `public/models/`). The original package is unmaintained.
+- **Matching:** ADR-002 put the match decision in the browser. Phase 2 instead follows API_SPEC.md's stated v1 default (the ARCHITECTURE.md hardening path): the browser computes the live descriptor, and **the server recomputes the euclidean distance against the stored descriptor and applies the ADR-006 threshold itself**. A tampered client can no longer assert its own match result.
+- **Consequence:** `GET /api/students/:roll_number/descriptor` is NOT built — with server-side compare, no descriptor ever needs to leave the server, which also removes the enumeration surface SECURITY.md flags. API_SPEC.md's descriptor-endpoint section is superseded by this ADR.
+- **Still client-side, honestly:** face *detection* (exactly-one-face) happens in the browser before a descriptor exists; liveness is still out of scope (RISKS.md).
+
 ## Open decisions
 - Teacher auth: Supabase Auth email/password vs simple PIN — TBD (needs human decision).
 - Photo retention: keep registration photos (private bucket) vs descriptor-only after registration — TBD (needs human decision; ETHICS_PRIVACY.md leans descriptor-only).

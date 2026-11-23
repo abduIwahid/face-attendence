@@ -1,29 +1,25 @@
-import { ClipboardList, Settings, Users } from "lucide-react";
+import { ClipboardList, Users } from "lucide-react";
 import Link from "next/link";
+import ClassLocationSettings from "../../components/ClassLocationSettings";
 
 /**
- * Teacher dashboard — Phase 1 placeholder. The session check lives in
- * `app/teacher/layout.tsx`; this page only renders the (currently empty)
- * overview cards. Real data arrives with the Phase 2/3 features.
+ * Teacher dashboard. The session check lives in `app/teacher/layout.tsx`;
+ * this page renders the overview cards plus the class-location control
+ * (Phase 2 — the verify flow cannot run until a class location exists;
+ * the full log table and settings page arrive in Phase 3).
  */
 const cards = [
   {
     icon: Users,
     title: "Students",
-    empty: "No students registered yet.",
-    action: "Registration opens in Phase 2.",
+    empty: "Registration is open.",
+    action: "Students register themselves from the Register page — their faces are stored as descriptors, never as public photos.",
   },
   {
     icon: ClipboardList,
     title: "Attendance",
-    empty: "No attendance recorded yet.",
-    action: "Rows appear here after the first verification.",
-  },
-  {
-    icon: Settings,
-    title: "Class settings",
-    empty: "No class location set yet.",
-    action: "Location and radius become editable in Phase 3.",
+    empty: "No log view yet.",
+    action: "Attendance rows are being recorded by the verify flow. The log table + Excel export arrive in Phase 3.",
   },
 ];
 
@@ -31,17 +27,17 @@ export default function TeacherPage() {
   return (
     <div>
       <p className="text-xs font-semibold uppercase tracking-widest text-accent-strong">
-        Phase 1 — Foundation
+        Phase 2 — Core feature
       </p>
       <h1 className="mt-2 text-3xl font-bold leading-tight text-primary">
         Teacher Dashboard
       </h1>
       <p className="mt-2 max-w-xl text-base leading-relaxed text-secondary">
-        You are signed in. Student registration, the attendance log and class
-        settings will appear here as the next phases land.
+        You are signed in. Set the class location below first — students can
+        only mark attendance inside its radius.
       </p>
 
-      <div className="mt-8 grid gap-4 sm:grid-cols-3">
+      <div className="mt-8 grid gap-4 sm:grid-cols-2">
         {cards.map((card) => (
           <section
             key={card.title}
@@ -55,10 +51,18 @@ export default function TeacherPage() {
         ))}
       </div>
 
+      <div className="mt-4">
+        <ClassLocationSettings />
+      </div>
+
       <p className="mt-8 text-sm text-secondary">
-        Looking for student check-in?{" "}
+        Student pages:{" "}
         <Link href="/register" className="font-semibold text-accent-strong underline">
-          Open the registration page
+          Register
+        </Link>{" "}
+        ·{" "}
+        <Link href="/verify" className="font-semibold text-accent-strong underline">
+          Mark attendance
         </Link>
         .
       </p>
