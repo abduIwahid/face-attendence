@@ -14,7 +14,7 @@ Budget ≈ 7 days part-time. Percentages are of total effort. Owner = Wadi for e
 - [x] Migrations: `students`, `class_settings`, `attendance` + RLS on (DATA_MODEL.md) — SQL written in session 05; **APPLIED by Wadi 2026-11-23** (dashboard paste) and verified (Phase 1 exit check passed; teacher sign-in works)
 - [x] Private Storage bucket `registration-photos` — went live with the same paste; register route uploads to it (session 06)
 - [x] `lib/`: supabase clients, `geo.ts` (haversine) + unit test, Zod schemas — DONE 2026-11-23 (session 05): `lib/supabase/{client,server,admin}.ts`, `lib/geo.ts` + `lib/geo.test.ts` (5/5 passing), `lib/validation.ts`
-- [ ] `class_settings` row 1 seeded (demo location — DEMO_DATA.md) — no SQL seed (coordinates are TBD-verify on site); the teacher setter on `/teacher` (session 06) now writes this row from the device's GPS — happens in Wadi's Phase 2 phone test
+- [x] `class_settings` row 1 seeded (demo location — DEMO_DATA.md) — no SQL seed (coordinates are TBD-verify on site); the teacher setter on `/teacher` (session 06) writes this row from the device's GPS — DONE 2026-11-23: Wadi set it during his phone test and re-saved it with the sampled setter in the session 07 retest (verified live via GET /api/class-settings)
 - [x] Teacher auth wired (decision in DECISIONS.md) + empty teacher page behind it — DONE 2026-11-23 (session 05): Supabase Auth email/password; `/login` page; `/teacher` placeholder dashboard behind the server-side session guard (layout); logout. DECISIONS.md open question to be marked settled by Wadi.
 - **Exit check:** ✅ tables exist, RLS verified (anon key cannot read `students`), teacher sign-in confirmed by Wadi 2026-11-23.
 
@@ -25,14 +25,16 @@ Budget ≈ 7 days part-time. Percentages are of total effort. Owner = Wadi for e
 - [x] Verify flow wired: descriptor fetch → match → geolocation → POST /api/verify — DONE with a strengthening (session 06, ADR-008): the descriptor goes TO the server and the match is decided server-side; no descriptor is ever fetched to a browser
 - [x] Server re-checks: haversine, accuracy cap, duplicate-per-day, rate limit — DONE (session 06): `lib/verify.ts` ordered decision + tests; DB partial unique index is the race backstop
 - [ ] Threshold tuning session with demo students; record distances (ADR-006) — pending real faces (Phase 4 seed session); 0.6 default ships meanwhile
-- **Exit check:** Wadi registers and marks himself PRESENT on his phone, standing at the demo location — FIRST TEST FAILED on GPS (session 06 steps followed; /verify reported ~160–170 m from the exact class spot — indoor single-shot drift). **Fix shipped session 07 (ADR-009): best-of-several sampling + accuracy-aware effective-distance decision + 250 m cap; retest pending Wadi** (re-save the class location with the sampled setter first, then verify). Note: the minimal teacher class-location setter (Phase 3 settings scope) was pulled forward into Phase 2 — /verify cannot be exercised without a class location; the full settings page stays in Phase 3.
+- **Exit check:** ✅ CLOSED 2026-11-23 — Wadi's retest after the session 07 fix passed: class location re-saved with the sampled setter, then PRESENT confirmed on his phone from the same spot ("ho gya", 21:19 PKT). Note: the minimal teacher class-location setter (Phase 3 settings scope) was pulled forward into Phase 2 — /verify cannot be exercised without a class location; the full settings page stayed in Phase 3 (delivered session 08).
 
-## Phase 3 — Secondary features + polish (60–75%)
-- [ ] Teacher log table (date filter) + SheetJS .xlsx export
-- [ ] Teacher settings page (location + radius)
-- [ ] Failed-attempt logging (SHOULD) if Phase 2 finished clean
-- [ ] All loading / empty / error states per DESIGN.md
-- **⚠ DEPENDENCY FREEZE at 75%** — no new packages/services after this point without Wadi's approval.
+## Phase 3 — Secondary features + polish (60–75%) — ✅ DONE 2026-11-23 (session 08)
+- [x] Teacher log table (date filter) + SheetJS .xlsx export — GET /api/log (session + RLS read) + AttendanceLog UI + client-side workbook from the on-screen rows; round-trip unit-verified
+- [x] Teacher settings page (location + radius) — /teacher/settings hosts the full ClassLocationSettings control + how-the-check-works card; the dashboard keeps the same control; teacher nav added
+- [x] Failed-attempt logging (SHOULD) if Phase 2 finished clean — shipped in Phase 2 (session 06); the Phase 3 log makes FAILED rows + reasons visible
+- [x] All loading / empty / error states per DESIGN.md — log + students (skeleton / empty / error-with-retry), export error state, settings last-saved state
+- [x] Registered-students view + ETHICS_PRIVACY deletion path (session 08 addition within the plan's teacher-view scope) — GET/DELETE /api/students; real deletion (photo → attendance → student row)
+- [x] **Frontend expansion (Wadi, 2026-11-23 21:22 PKT, same round):** full landing page + design-system/motion layer across all pages (ADR-010) — DESIGN.md palette/fonts applied as a system, `.animate-rise` / `.hover-lift` in globals.css, reduced-motion respected, width-matrix audit clean
+- **⚠ DEPENDENCY FREEZE at 75%** — no new packages/services after this point without Wadi's approval. (`xlsx` was added inside Phase 3, ahead of the freeze, as the PRD/API_SPEC always planned.)
 
 ## Phase 4 — Seed + demo data (75–82%) — hard deadline
 - [ ] 5 demo students registered through the real flow (DEMO_DATA.md)

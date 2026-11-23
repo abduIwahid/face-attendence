@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isValidDateString } from "./dates.ts";
 
 /**
  * Zod schemas — the single source for every input boundary
@@ -61,6 +62,16 @@ export const classSettingsSchema = z.object({
 export const loginSchema = z.object({
   email: z.email("Enter a valid email address"),
   password: z.string().min(1, "Password is required"),
+});
+
+/** GET /api/log?date=YYYY-MM-DD — a real calendar date (lib/dates.ts). */
+export const logDateSchema = z
+  .string()
+  .refine(isValidDateString, "Date must be a real date in YYYY-MM-DD format");
+
+/** DELETE /api/students — the student id whose record is removed. */
+export const deleteStudentSchema = z.object({
+  id: z.uuid("A valid student id is required"),
 });
 
 export type RegisterInput = z.infer<typeof registerSchema>;

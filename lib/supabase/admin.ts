@@ -2,8 +2,11 @@ import { createClient as createSupabaseClient } from "@supabase/supabase-js";
 
 /**
  * SERVER-ONLY service-role client. Bypasses RLS by design — this is the
- * client the API routes use for student register/verify and teacher log
- * reads (brain/DATA_MODEL.md: the browser never queries the tables).
+ * client the API routes use for student register/verify writes, class
+ * settings writes, and student deletion (brain/DATA_MODEL.md: the browser
+ * never queries the tables). Teacher DISPLAY reads (log, student list) do
+ * NOT use this client — they run through the teacher's session client so
+ * RLS enforces them (session 08).
  *
  * NEVER import this file from client code: the service-role key must never
  * reach a browser bundle (brain/SECURITY.md sweep #3).

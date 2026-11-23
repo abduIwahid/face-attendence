@@ -40,7 +40,7 @@ export default function LoginPage() {
 
   return (
     <main className="flex flex-1 items-center justify-center px-6 py-16">
-      <div className="w-full max-w-md rounded-xl border border-border bg-surface p-8 shadow-md">
+      <div className="animate-rise w-full max-w-md rounded-xl border border-border bg-surface p-8 shadow-md">
         <p className="text-xs font-semibold uppercase tracking-widest text-accent-strong">
           Teacher sign-in
         </p>

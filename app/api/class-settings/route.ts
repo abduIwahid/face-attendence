@@ -8,6 +8,7 @@ interface ClassSettingsData {
   latitude: number;
   longitude: number;
   radius_meters: number;
+  updated_at: string | null;
 }
 
 /**
@@ -18,7 +19,7 @@ export async function GET() {
   const admin = createAdminClient();
   const { data, error } = await admin
     .from("class_settings")
-    .select("class_name, latitude, longitude, radius_meters")
+    .select("class_name, latitude, longitude, radius_meters, updated_at")
     .eq("id", 1)
     .maybeSingle();
   if (error) {
@@ -81,7 +82,7 @@ export async function PATCH(request: Request) {
   const { data, error } = await admin
     .from("class_settings")
     .upsert(row, { onConflict: "id" })
-    .select("class_name, latitude, longitude, radius_meters")
+    .select("class_name, latitude, longitude, radius_meters, updated_at")
     .single();
   if (error || !data) {
     return fail(500, "SERVER_ERROR", "Something went wrong on our side. Please try again.");

@@ -9,14 +9,15 @@ interface ClassSettingsData {
   latitude: number;
   longitude: number;
   radius_meters: number;
+  updated_at: string | null;
 }
 
 /**
  * Teacher control: set the class location from this device's GPS + the
- * attendance radius (brain/BUILD_PLAN.md Phase 2 addition — the full
- * settings page is Phase 3, but /verify cannot be exercised until a class
- * location exists). Talks to PATCH /api/class-settings, which checks the
- * teacher session server-side (brain/API_SPEC.md).
+ * attendance radius. Used on the teacher dashboard and on the full
+ * settings page (/teacher/settings) — both write the same class_settings
+ * row via PATCH /api/class-settings, which checks the teacher session
+ * server-side (brain/API_SPEC.md).
  */
 export default function ClassLocationSettings() {
   const [className, setClassName] = useState("");
@@ -28,6 +29,7 @@ export default function ClassLocationSettings() {
   const [locating, setLocating] = useState(false);
   const [saving, setSaving] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [lastSaved, setLastSaved] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -50,6 +52,7 @@ export default function ClassLocationSettings() {
           setLatitude(data.latitude);
           setLongitude(data.longitude);
           setRadius(data.radius_meters);
+          setLastSaved(data.updated_at);
         }
       } catch {
         /* an unset class is a normal first-run state */
@@ -123,6 +126,10 @@ export default function ClassLocationSettings() {
         "ok" in payload &&
         payload.ok === true
       ) {
+        if ("data" in payload) {
+          const data = payload.data as ClassSettingsData;
+          setLastSaved(data.updated_at);
+        }
         setMessage("Class location saved. Students can now mark attendance inside the radius.");
         return;
       }
@@ -152,9 +159,16 @@ export default function ClassLocationSettings() {
       </h2>
       <p className="mt-1 text-sm leading-relaxed text-secondary">
         Stand in the classroom, capture this device&apos;s location, and set
-        the radius inside which students may mark attendance. The full
-        settings page arrives in Phase 3; this is the working control the
-        verify flow needs.
+        the radius inside which students may mark attendance.
+        {lastSaved
+          ? ` Last saved ${new Date(lastSaved).toLocaleString("en-GB", {
+              timeZone: "Asia/Karachi",
+              day: "numeric",
+              month: "short",
+              hour: "2-digit",
+              minute: "2-digit",
+            })}.`
+          : ""}
       </p>
 
       <form onSubmit={handleSave} className="mt-5 flex flex-col gap-4">

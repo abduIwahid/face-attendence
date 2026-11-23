@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import LogoutButton from "@/components/LogoutButton";
+import TeacherNav from "@/components/TeacherNav";
 import { createClient } from "@/lib/supabase/server";
 
 // Auth state is per-request runtime data — this segment must never prerender.
@@ -31,7 +32,10 @@ export default async function TeacherLayout({
             <p className="text-sm font-bold text-primary">Teacher Dashboard</p>
             <p className="text-xs text-secondary">{user.email}</p>
           </div>
-          <LogoutButton />
+          <div className="flex items-center gap-2 sm:gap-4">
+            <TeacherNav />
+            <LogoutButton />
+          </div>
         </div>
       </header>
       <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-8">{children}</main>

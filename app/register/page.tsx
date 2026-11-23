@@ -71,7 +71,7 @@ export default function RegisterPage() {
   if (registeredName) {
     return (
       <main className="flex flex-1 justify-center px-6 py-12">
-        <div className="w-full max-w-md">
+        <div className="animate-rise w-full max-w-md">
           <div className="rounded-xl border border-border bg-surface p-8 text-center shadow-md">
             <CheckCircle2 className="mx-auto h-12 w-12 text-accent-strong" aria-hidden />
             <h1 className="mt-4 text-2xl font-bold leading-tight text-primary">
@@ -98,7 +98,7 @@ export default function RegisterPage() {
 
   return (
     <main className="flex flex-1 justify-center px-6 py-12">
-      <div className="w-full max-w-md">
+      <div className="animate-rise w-full max-w-md">
         <p className="text-xs font-semibold uppercase tracking-widest text-accent-strong">
           Student registration
         </p>

@@ -176,7 +176,7 @@ export default function VerifyPage() {
 
   return (
     <main className="flex flex-1 justify-center px-6 py-12">
-      <div className="w-full max-w-md">
+      <div className="animate-rise w-full max-w-md">
         <p className="text-xs font-semibold uppercase tracking-widest text-accent-strong">
           Mark attendance
         </p>
