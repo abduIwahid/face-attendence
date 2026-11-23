@@ -5,7 +5,7 @@ Budget ≈ 7 days part-time. Percentages are of total effort. Owner = Wadi for e
 ## Phase 0 — Setup (0–8%)
 - [x] Create GitHub repo `face-attendance`; push this brain — DONE 2026-11-23 (session 03): Wadi created the repo as **`face-attendence`** (typo; rename pending his dashboard action); all 52 files pushed to `main` (`0562beff…`, `b70e412b…`), tree read-back verified
 - [x] Scaffold Next.js (TS, App Router, Tailwind) — `create-next-app` (Next 16.4.6, Tailwind v4, src/ OFF — session 02)
-- [ ] Create Supabase project; save keys to `.env.local` (from `.env.example`) — ⛔ STILL BLOCKED 2026-11-23 (session 03): Wadi created the project, but it is in a different Supabase org than the connector token can access (API lists only WhyRisk); needs Wadi — options in current-state.md
+- [x] Create Supabase project; save keys to `.env.local` (from `.env.example`) — DONE 2026-11-23 (session 04): Wadi connected the Vercel-provisioned database `supabase-face-attendence` (ref `bwjgtbuytiemssovxrgy`) via Vercel Storage; all 16 Supabase env vars set on Vercel with standard names (Production + Preview); `.env.local` written (real URL + radius; the two key values are write-only in Vercel and unreadable by the Supabase connector — 403 — so they are marked placeholders to paste once from the Supabase dashboard; see session 04)
 - [x] Deploy the EMPTY app to Vercel; confirm the URL loads on Wadi's phone — deployed + HTTP 200 verified by agent 2026-11-23 (https://face-attendance-abdu1wahid.vercel.app/); Wadi's phone open is still the exit check
 - [x] Add DESIGN.md tokens to globals.css + Tailwind config — done via CSS vars + Tailwind v4 `@theme inline` (session 02)
 - **Exit check:** empty app live on a real URL, opened on a phone.
