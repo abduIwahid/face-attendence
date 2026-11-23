@@ -4,10 +4,11 @@
 
 Attendance by live selfie + live location. A student marks attendance from their own phone; the record is written **only** when their face matches their registered photo **and** their GPS position is inside the class radius. No paper register, no proxy attendance.
 
-**Live demo:** TBD (Phase 0 deploy)
+**Live demo:** https://face-attendance-abdu1wahid.vercel.app/ (Phase 0 placeholder — HTTP 200 verified 2026-11-23)
+**Repo:** https://github.com/abduIwahid/face-attendence (repo name carries a typo — "attendence"; rename to `face-attendance` pending)
 **Screenshots:** TBD (add after Phase 3)
 
-![status](https://img.shields.io/badge/status-brain--only%20(no%20code%20yet)-lightgrey)
+![status](https://img.shields.io/badge/status-phase%200%20%E2%80%94%20live%20placeholder-blue)
 ![stack](https://img.shields.io/badge/stack-Next.js%20%2B%20Supabase%20%2B%20face--api.js-black)
 
 ## How it works
